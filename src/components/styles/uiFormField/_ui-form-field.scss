@@ -1,0 +1,22 @@
+.ui-form-field {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 16px;
+  gap: 2px;
+
+  border-radius: 4px;
+  border: 1px solid var(--colors-gray-l, #F1F1F1);
+  background: var(--colors-white, #FFF);
+
+  &__input-label {
+    color: var(--colors-gray, rgba(17, 17, 17, 0.48));
+    font-size: var(--font-size-s);
+  }
+
+  &__input-text {
+    &::placeholder {
+      color: var(--colors-black, #111);
+      opacity: 0.5;
+    }
+  }
+}

@@ -1,0 +1,45 @@
+$tablet-width: 768px;
+$desktop-width: 1366px;
+
+:root {
+    --colors-white: #FFF;
+    --colors-dark: #000;
+    --colors-black: #111;
+    --colors-primary: #01A7FD;
+
+    --colors-gray: rgba(17, 17, 17, 0.48);
+    --colors-gray-m: #FAFAFA;
+    --colors-gray-l: #F1F1F1;
+
+    --font-size-base: 14px;
+    --font-size-s: 13px;
+    --font-size-l: 16px;
+
+    --app-border-s: 10px;
+    --app-border-m: 20px;
+
+    --desktop-width: 1366px;
+    --tablet-width: 768px;
+}
+
+ul {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.container {
+    max-width: $desktop-width;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.content-container {
+    max-width: 656px;
+    min-width: 320px;
+    margin: 0 auto;
+    padding: 30px 20px;
+}
