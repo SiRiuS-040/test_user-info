@@ -48,15 +48,15 @@
     }
   }
 
-  &__btn-save {
-    margin-top: 30px;
-  }
-
   &__child-title {
     position: relative;
   }
 
-  &__add-child {
+  &__btn-save {
+    margin-top: 30px;
+  }
+
+  &__btn-add-child {
     position: absolute;
     right: 0;
     transform: translateY(-25%);

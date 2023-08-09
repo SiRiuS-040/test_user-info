@@ -28,12 +28,17 @@
                         <UiButton
                             v-if="isAddChildBtnVisible"
                             @click="addChildField"
-                            class="information-form__add-child ui-button--add"
+                            buttonType="add"
+                            class="information-form__btn-add-child"
                         >
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="ui-button__icon">
-                                <path fill-rule="evenodd" clip-rule="evenodd" d="M5.13332 10.8556C4.50125 10.8555 3.98887 11.3679 3.98887 12C3.98887 12.6321 4.50126 13.1445 5.13332 13.1445L10.8554 13.1445L10.8554 18.8668C10.8554 19.4989 11.3678 20.0113 11.9999 20.0113C12.632 20.0113 13.1444 19.4989 13.1444 18.8668L13.1443 13.1445L18.8667 13.1445C19.4988 13.1445 20.0112 12.6321 20.0112 12C20.0112 11.3679 19.4988 10.8556 18.8667 10.8556L13.1443 10.8556L13.1443 5.13338C13.1443 4.50132 12.632 3.98893 11.9999 3.98893C11.3678 3.98893 10.8554 4.50131 10.8554 5.13338L10.8554 10.8556L5.13332 10.8556Z" fill="currentColor"/>
-                            </svg>
-                            <span class="ui-button__desc">Добавить ребенка</span>
+                            <template #icon>
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M5.13332 10.8556C4.50125 10.8555 3.98887 11.3679 3.98887 12C3.98887 12.6321 4.50126 13.1445 5.13332 13.1445L10.8554 13.1445L10.8554 18.8668C10.8554 19.4989 11.3678 20.0113 11.9999 20.0113C12.632 20.0113 13.1444 19.4989 13.1444 18.8668L13.1443 13.1445L18.8667 13.1445C19.4988 13.1445 20.0112 12.6321 20.0112 12C20.0112 11.3679 19.4988 10.8556 18.8667 10.8556L13.1443 10.8556L13.1443 5.13338C13.1443 4.50132 12.632 3.98893 11.9999 3.98893C11.3678 3.98893 10.8554 4.50131 10.8554 5.13338L10.8554 10.8556L5.13332 10.8556Z" fill="currentColor"/>
+                                </svg>
+                            </template>
+                            <template #desc>
+                                Добавить ребенка
+                            </template>
                         </UiButton>
                     </h2>
                     <div class="information-form__children-list">
@@ -55,9 +60,11 @@
                             />
                             <UiButton
                                 @click="deleteChildField(child.id)"
-                                class="ui-button ui-button--delete"
+                                buttonType="del"
                             >
-                                Удалить
+                                <template #desc>
+                                    Удалить
+                                </template>
                             </UiButton>
                         </div>
                     </div>
@@ -65,9 +72,12 @@
                 <UiButton
                     type="reset"
                     @click="saveData"
-                    class="information-form__btn-save ui-button ui-button--save"
+                    buttonType="save"
+                    class="information-form__btn-save"
                 >
-                    Сoхранить
+                    <template #desc>
+                        Сoхранить
+                    </template>
                 </UiButton>
             </UiForm>
         </section>
@@ -93,7 +103,7 @@
                             <span
                                 v-if="this.userInfoPreview.userData.age"
                             >
-                            , {{ userInfoPreview.userData.age }} лет
+                            {{ `, ${setAge(userInfoPreview.userData.age)}` }}
                             </span>
                         </p>
                     </div>
@@ -117,7 +127,7 @@
                                     <span
                                         v-if="child.age"
                                     >
-                                    , {{ child.age }} лет
+                                        {{ `, ${setAge(child.age)}` }}
                                 </span>
                                 </p>
                             </li>
@@ -136,7 +146,7 @@ import UiForm from '../components/UiForm.vue';
 import UiFormField from '../components/UiFormField.vue';
 import UiButton from '../components/UiButton.vue';
 import {parentFormTabs} from './configs/tabData.js';
-import {userFormFields , childFormFields } from './configs/formData.js';
+import {childFormFields, userFormFields} from './configs/formData.js';
 
 export default {
     name: 'AppMain',
@@ -151,7 +161,6 @@ export default {
             parentFormTabs,
             userFormFields,
             childFormFields,
-
             isChildListVisible: false,
             isAddChildBtnVisible: true,
             userData: {},
@@ -177,6 +186,14 @@ export default {
             } else {
                 this.isChildListVisible = true;
             }
+        },
+        setAge(age) {
+            function plural(number, titles) {
+                const cases = [2, 0, 1, 1, 1, 2];
+                return titles[ (number%100>4 && number%100<20)? 2 : cases[(number%10<5)?number%10:5] ];
+            }
+            const declension = ['год', 'года', 'лет'];
+            return `${age} ${plural(age, declension)}`;
         },
         deleteChildField(id) {
             let dataIndex = this.childList.findIndex(child => child.id === id)

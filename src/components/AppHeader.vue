@@ -1,6 +1,7 @@
 <template>
     <header class="app-header">
         <div class="app-header__content container">
+            <h1 hidden>Анкета пользователя</h1>
             <div class="app-header__logo-wrapper">
                 <img src="../assets/img/alef_logo.svg" alt="logo">
             </div>
@@ -19,7 +20,6 @@
 <script>
 
 import {parentFormTabs} from './configs/tabData.js';
-
 
 export default {
     name: "AppHeader",
