@@ -1,5 +1,7 @@
 # userInfo
 
+https://sirius-040.github.io/test_user-info_vue/
+
 ## Project setup
 ```
 npm install
