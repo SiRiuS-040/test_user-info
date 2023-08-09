@@ -57,9 +57,18 @@ export default {
             fieldData: {},
         };
     },
-
     methods: {
-        addData() {
+        validate(evt) {
+            if (evt.target.type === 'tel') {
+                const regex = /[0-9]|\./;
+
+                if( !regex.test(evt.data) ) {
+                    this.field.value = this.field.value.slice(0, -1)
+                }
+            }
+        },
+        addData(value) {
+            this.validate(value)
             this.fieldData.id = this.field.fieldId;
             const fieldLabelType = this.field.labelType;
             this.fieldData[fieldLabelType] = fieldLabelType;
