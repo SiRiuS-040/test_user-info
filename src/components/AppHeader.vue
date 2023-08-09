@@ -20,6 +20,7 @@
 <script>
 
 import {parentFormTabs} from './configs/tabData.js';
+import { fieldValidation } from './configs/formData.js';
 
 export default {
     name: "AppHeader",
@@ -27,11 +28,17 @@ export default {
     data() {
         return {
             parentFormTabs,
+            fieldValidation,
         };
     },
 
     methods: {
+        clearFieldValidation() {
+            this.fieldValidation.formFieldStatus = Array();
+            this.fieldValidation.dataSaved = false;
+        },
         selectTab(selectedTab) {
+            this.clearFieldValidation();
             for (let tab in this.parentFormTabs) {
                 this.parentFormTabs[tab].isActive = (this.parentFormTabs[tab].name === selectedTab.name)
             }

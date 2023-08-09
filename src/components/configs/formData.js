@@ -36,3 +36,10 @@ export const childFormFields = [
     },
 ];
 
+export const fieldValidation = {
+    isFormValid: false,
+    invalidFields: 0,
+    formFieldStatus: [],
+    dataSaved: false,
+};
+

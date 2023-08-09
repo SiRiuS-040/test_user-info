@@ -19,4 +19,8 @@
       opacity: 0.5;
     }
   }
+
+  &--has-error {
+    border: 1px solid var(--colors-error, red);
+  }
 }

@@ -70,8 +70,7 @@
                     </div>
                 </div>
                 <UiButton
-                    type="reset"
-                    @click="saveData"
+                    @click="saveData(fieldValidation)"
                     buttonType="save"
                     class="information-form__btn-save"
                 >
@@ -79,6 +78,11 @@
                         Сoхранить
                     </template>
                 </UiButton>
+
+                <h2
+                    v-if="fieldValidation.dataSaved"
+                    class="information-form__info_saved"
+                >Данные успешно сохранены!</h2>
             </UiForm>
         </section>
         <section
@@ -147,6 +151,7 @@ import UiFormField from '../components/UiFormField.vue';
 import UiButton from '../components/UiButton.vue';
 import {parentFormTabs} from './configs/tabData.js';
 import {childFormFields, userFormFields} from './configs/formData.js';
+import { fieldValidation } from './configs/formData.js';
 
 export default {
     name: 'AppMain',
@@ -161,6 +166,8 @@ export default {
             parentFormTabs,
             userFormFields,
             childFormFields,
+            fieldValidation,
+
             isChildListVisible: false,
             isAddChildBtnVisible: true,
             userData: {},
@@ -197,13 +204,17 @@ export default {
         },
         deleteChildField(id) {
             let dataIndex = this.childList.findIndex(child => child.id === id)
+            fieldValidation.formFieldStatus.forEach(function (data, index) {
+                if (data.dataType === 'childData' && data.fieldId === dataIndex) {
+                    delete fieldValidation.formFieldStatus[index]
+                }
+            })
             this.childList.splice(dataIndex, 1);
             this.checkAddBtnVisibility();
             this.checkChildListVisibility();
         },
         addChildField(evt) {
             evt.preventDefault();
-
             const childData = {
                 name: '',
                 age: ''
@@ -219,6 +230,7 @@ export default {
             this.checkChildListVisibility();
         },
         addData(fieldData) {
+            this.fieldValidation.dataSaved = false;
             if (fieldData.dataType === 'userData') {
                 this.userData[fieldData.labelType] = fieldData.value;
             }
@@ -227,25 +239,44 @@ export default {
                 this.childList[dataIndex][fieldData.labelType] = fieldData.value;
             }
         },
-        saveData() {
-            this.userInfoPreview.userData = Object();
-            this.userInfoPreview.childData = Array();
-            const copyChildList = Array();
-            this.childList.forEach(function(child) {
-                if (child.name === '') {
-                    return
-                } else {
-                    let copyChild = {};
-                    Object.assign(copyChild, child)
-                    copyChildList.push(copyChild);
+        clearData() {
+            this.fieldValidation.formFieldStatus.splice(2);
+        },
+        saveData(validationData) {
+            validationData.dataSaved = false;
+            validationData.isFormValid = false;
+            validationData.invalidFields = 0;
+            validationData.formFieldStatus.forEach(function (data) {
+                data.validated = true;
+                if (data.isValid === false) {
+                    validationData.invalidFields++
                 }
             })
-            Object.assign(this.userInfoPreview.userData, this.userData)
-            Object.assign(this.userInfoPreview.childData, copyChildList)
-            this.userData = Object();
-            this.childList = Array();
-            this.checkAddBtnVisibility();
-            this.checkChildListVisibility();
+            if (validationData.invalidFields === 0) {
+                validationData.isFormValid = true;
+            }
+            if (validationData.isFormValid == true) {
+                this.fieldValidation.dataSaved = true;
+                this.userInfoPreview.userData = Object();
+                this.userInfoPreview.childData = Array();
+                const copyChildList = Array();
+                this.childList.forEach(function(child) {
+                    if (child.name === '') {
+                        return
+                    } else {
+                        let copyChild = {};
+                        Object.assign(copyChild, child)
+                        copyChildList.push(copyChild);
+                    }
+                })
+                Object.assign(this.userInfoPreview.userData, this.userData)
+                Object.assign(this.userInfoPreview.childData, copyChildList)
+                this.userData = Object();
+                this.childList = Array();
+                this.clearData();
+                this.checkAddBtnVisibility();
+                this.checkChildListVisibility();
+            }
         },
     },
 }
