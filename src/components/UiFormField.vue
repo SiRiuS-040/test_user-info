@@ -83,7 +83,6 @@ export default {
                 }
             }
             if (this.field.value.length === 0) {
-                console.log('поле имени пустое')
                 this.field.isValid = false;
             } else {
                 this.field.isValid = true;
