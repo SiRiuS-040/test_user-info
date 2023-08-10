@@ -170,7 +170,12 @@ export default {
             childList,
 
             userInfoPreview: {
-                userData: {},
+                userData: {
+                    data: {
+                        name: {},
+                        age: {},
+                    },
+                },
                 childData: [],
             },
         };
