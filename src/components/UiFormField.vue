@@ -91,10 +91,6 @@ export default {
         },
         addData(value) {
             this.validate(value)
-            this.fieldData.id = this.field.fieldId;
-            const fieldLabelType = this.field.labelType;
-            this.fieldData[fieldLabelType] = fieldLabelType;
-            this.fieldData.value = this.field.value;
             this.$emit('createData', this.field);
         }
     },

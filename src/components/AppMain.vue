@@ -91,23 +91,21 @@
         >
             <div class="preview-form">
                 <div
-                    v-if="!this.userInfoPreview.userData.name"
+                    v-if="!userInfoPreview.userData.data.name.value"
                     class="preview-form__wrapper"
                 >
                     <h2 class="app-main__section-title">Сведения отсутствуют</h2>
                 </div>
                 <div
-                    v-if="this.userInfoPreview.userData.name"
+                    v-if="userInfoPreview.userData.data.name.value"
                     class="preview-form__wrapper"
                 >
                     <div class="preview-form__user-info">
                         <h2 class="app-main__section-title">Персональные данные</h2>
                         <p class="preview-form__user-data">
-                            {{ userInfoPreview.userData.name }}
-                            <span
-                                v-if="this.userInfoPreview.userData.age"
-                            >
-                            {{ `, ${setAge(userInfoPreview.userData.age)}` }}
+                            {{ userInfoPreview.userData.data.name.value }}
+                            <span>
+                            {{ `, ${setAge(userInfoPreview.userData.data.age.value)}` }}
                             </span>
                         </p>
                     </div>
@@ -123,15 +121,13 @@
                                 class="preview-form__child-item"
                             >
                                 <p
-                                    v-if="child.name"
+                                    v-if="child.data.name.value"
                                     class="preview-form__child-desc"
                                 >
                                 <span>
-                                    {{ child.name }}</span>
-                                    <span
-                                        v-if="child.age"
-                                    >
-                                        {{ `, ${setAge(child.age)}` }}
+                                    {{ child.data.name.value }}</span>
+                                    <span>
+                                        {{ `, ${setAge(child.data.age.value)}` }}
                                 </span>
                                 </p>
                             </li>
@@ -150,8 +146,7 @@ import UiForm from '../components/UiForm.vue';
 import UiFormField from '../components/UiFormField.vue';
 import UiButton from '../components/UiButton.vue';
 import {parentFormTabs} from './configs/tabData.js';
-import {childFormFields, userFormFields} from './configs/formData.js';
-import { fieldValidation } from './configs/formData.js';
+import {userFormFields, childFormFields, userData, childList, fieldValidation} from './configs/formData.js';
 
 export default {
     name: 'AppMain',
@@ -170,8 +165,10 @@ export default {
 
             isChildListVisible: false,
             isAddChildBtnVisible: true,
-            userData: {},
-            childList: [],
+
+            userData,
+            childList,
+
             userInfoPreview: {
                 userData: {},
                 childData: [],
@@ -216,8 +213,7 @@ export default {
         addChildField(evt) {
             evt.preventDefault();
             const childData = {
-                name: '',
-                age: ''
+                data: {},
             };
             if (this.childList.length === 0) {
                 childData.id = 0;
@@ -232,15 +228,23 @@ export default {
         addData(fieldData) {
             this.fieldValidation.dataSaved = false;
             if (fieldData.dataType === 'userData') {
-                this.userData[fieldData.labelType] = fieldData.value;
+                this.userData.data[fieldData.labelType] = fieldData;
             }
             if (fieldData.dataType === 'childData') {
                 const dataIndex = this.childList.findIndex(child => child.id === fieldData.fieldId)
-                this.childList[dataIndex][fieldData.labelType] = fieldData.value;
+                this.childList[dataIndex].data[fieldData.labelType] = fieldData;
             }
         },
         clearData() {
             this.fieldValidation.formFieldStatus.splice(2);
+            this.childList = Array();
+            this.userData.data.name.value = '';
+            this.userData.data.age.value = '';
+
+            this.fieldValidation.formFieldStatus.forEach(function (data) {
+                data.validated = false;
+                data.isValid = false;
+            })
         },
         saveData(validationData) {
             validationData.dataSaved = false;
@@ -255,24 +259,29 @@ export default {
             if (validationData.invalidFields === 0) {
                 validationData.isFormValid = true;
             }
+
             if (validationData.isFormValid == true) {
                 this.fieldValidation.dataSaved = true;
                 this.userInfoPreview.userData = Object();
                 this.userInfoPreview.childData = Array();
+
+                const copyUserData = {
+                    data: {},
+                };
+                for (let key in this.userData.data) {
+                    let copyUserField = Object();
+                    Object.assign(copyUserField, this.userData.data[key])
+                    copyUserData.data[key] = copyUserField;
+                };
                 const copyChildList = Array();
                 this.childList.forEach(function(child) {
-                    if (child.name === '') {
-                        return
-                    } else {
-                        let copyChild = {};
-                        Object.assign(copyChild, child)
-                        copyChildList.push(copyChild);
-                    }
+                    let copyChild = {};
+                    Object.assign(copyChild, child)
+                    copyChildList.push(copyChild);
                 })
-                Object.assign(this.userInfoPreview.userData, this.userData)
+
+                Object.assign(this.userInfoPreview.userData, copyUserData)
                 Object.assign(this.userInfoPreview.childData, copyChildList)
-                this.userData = Object();
-                this.childList = Array();
                 this.clearData();
                 this.checkAddBtnVisibility();
                 this.checkChildListVisibility();
